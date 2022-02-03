@@ -1,0 +1,6 @@
+props1:
+  - string-yaml-1
+  - string-yaml-2
+props2:
+  - prop1: string-yaml-1
+  - prop1: string-yaml-2
