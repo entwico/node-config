@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/entwico/node-config/compare/v1.0.2...v1.0.3) (2022-02-07)
+
+
+### Bug Fixes
+
+* handle false values properly ([d9f37b0](https://github.com/entwico/node-config/commit/d9f37b04771226a7e12c436cb539f90668bd4c51))
+
 ## [1.0.2](https://github.com/entwico/node-config/compare/v1.0.1...v1.0.2) (2022-02-03)
 
 
