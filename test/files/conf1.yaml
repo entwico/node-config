@@ -6,3 +6,6 @@ group:
   prop4: string-yaml
 prop5: string-yaml
 propFalse: false
+propObject:
+  attr1: true
+  attr2: "123"

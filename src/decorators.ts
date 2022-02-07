@@ -31,14 +31,16 @@ export function List(listItemType: Function) {
 }
 
 export function flattenProps(clss: any) {
-  const props: { key: string, type: 'string' | 'number' | 'boolean' }[] = [];
+  const props: { key: string, type: 'string' | 'number' | 'boolean' | 'unknown' }[] = [];
 
   function traverse(path: string, clssType: any) {
     const proto = clssType.prototype;
     const clssprops = classes.get(proto);
 
     if (!clssprops) {
-      throw new Error(`Unsupported type at path ${path}, class type ${clssType}`);
+      props.push({ key: path, type: 'unknown' });
+
+      return;
     }
 
     clssprops.forEach(prop => {

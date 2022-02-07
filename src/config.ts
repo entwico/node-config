@@ -50,6 +50,7 @@ export function loadConfig<T>(configClass: new () => T, { env, files }: LoadConf
         case 'string': set(result as any, prop.key, String(value)); break;
         case 'number': set(result as any, prop.key, Number(value)); break;
         case 'boolean': set(result as any, prop.key, Boolean(value)); break;
+        case 'unknown': set(result as any, prop.key, value); break;
       }
     }
   });
@@ -63,6 +64,7 @@ export function loadConfig<T>(configClass: new () => T, { env, files }: LoadConf
         case 'string': set(result as any, prop.key, String(stringVal)); break;
         case 'number': set(result as any, prop.key, Number(stringVal)); break;
         case 'boolean': set(result as any, prop.key, coerceBoolean(stringVal)); break;
+        case 'unknown': break; // cannot be converted from string w/o knowledge about the type
       }
     }
   })
