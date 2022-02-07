@@ -45,7 +45,7 @@ export function loadConfig<T>(configClass: new () => T, { env, files }: LoadConf
   props.forEach(prop => {
     const value = get(fromFiles, prop.key);
 
-    if (value || value === 0) {
+    if (value !== undefined) {
       switch (prop.type) {
         case 'string': set(result as any, prop.key, String(value)); break;
         case 'number': set(result as any, prop.key, Number(value)); break;
@@ -58,7 +58,7 @@ export function loadConfig<T>(configClass: new () => T, { env, files }: LoadConf
     const envName = (env.prefix + prop.key.replace(/\./g, '_')).toUpperCase();
     const stringVal = process.env[envName];
 
-    if (stringVal) {
+    if (stringVal !== undefined) {
       switch (prop.type) {
         case 'string': set(result as any, prop.key, String(stringVal)); break;
         case 'number': set(result as any, prop.key, Number(stringVal)); break;

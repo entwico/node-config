@@ -17,6 +17,7 @@ class Group {
 class Config {
   @Property() group: Group;
   @Property() prop5: string;
+  @Property() propFalse: boolean;
 }
 
 let originalEnv = process.env;
@@ -38,6 +39,7 @@ test('reads config from files', () => {
   expect(conf.group?.subgroup?.prop3).toBe(12);
   expect(conf.group?.prop4).toBe('string-js');
   expect(conf.prop5).toBe('string-json');
+  expect(conf.propFalse).toBe(false);
 });
 
 test('reads config from environment variables', () => {
@@ -56,6 +58,7 @@ test('reads config from environment variables', () => {
   expect(conf.group?.subgroup?.prop3).toBe(13);
   expect(conf.group?.prop4).toBe('env-override');
   expect(conf.prop5).toBe('env-override');
+  expect(conf.propFalse).toBe(false);
 });
 
 test('throws on unknown file types', () => {
