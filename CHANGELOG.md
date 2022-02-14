@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/entwico/node-config/compare/v1.0.3...v1.1.0) (2022-02-07)
+
+
+### Features
+
+* add support for generic nested object-properties ([9c0750a](https://github.com/entwico/node-config/commit/9c0750a79c3991e977408dbe57f4b520d4b55752))
+
 ## [1.0.3](https://github.com/entwico/node-config/compare/v1.0.2...v1.0.3) (2022-02-07)
 
 
