@@ -1,3 +1,5 @@
+import { ConfigContainerConstructor } from ".";
+
 type PropertyDescription = {
   key: string;
   single: boolean;
@@ -30,7 +32,7 @@ export function List(listItemType: Function) {
   }
 }
 
-export function flattenProps(clss: any) {
+export function flattenProps<T>(clss: ConfigContainerConstructor<T>) {
   const props: { key: string, type: 'string' | 'number' | 'boolean' | 'unknown' }[] = [];
 
   function traverse(path: string, clssType: any) {

@@ -26,6 +26,26 @@ let originalEnv = process.env;
 beforeEach(() => process.env = { ...process.env });
 afterEach(() => process.env = originalEnv);
 
+test('creates config by a factory', () => {
+  const paths = [
+    join(__dirname, 'files', 'conf1.yaml'),
+  ];
+
+  const conf = loadConfig(Config, { env: { prefix: '' }, files: paths },);
+
+  expect(conf.group?.subgroup?.prop1).toBe('string-yaml');
+});
+
+test('loads config into object', () => {
+  const paths = [
+    join(__dirname, 'files', 'conf1.yaml'),
+  ];
+
+  const conf = loadConfig(new Config(), { env: { prefix: '' }, files: paths },);
+
+  expect(conf.group?.subgroup?.prop1).toBe('string-yaml');
+});
+
 test('reads config from files', () => {
   const paths = [
     join(__dirname, 'files', 'conf1.yaml'),

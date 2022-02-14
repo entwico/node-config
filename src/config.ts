@@ -34,13 +34,18 @@ export interface LoadConfigSettings {
   files: string[];
 }
 
-export function loadConfig<T>(configClass: new () => T, { env, files }: LoadConfigSettings) {
-  const result = new configClass();
+export interface ConfigContainerConstructor<T> {
+  new(): T;
+}
+
+export function loadConfig<T>(container: ConfigContainerConstructor<T> | T, { env, files }: LoadConfigSettings) {
+  const isFactory = typeof container === 'function';
+  const result = !isFactory ? container : new (container as ConfigContainerConstructor<T>)();
   const fromFiles = {};
 
   files.forEach(p => merge(fromFiles, readConfigFile(p)));
 
-  const props = flattenProps(configClass);
+  const props = flattenProps((isFactory ? container as ConfigContainerConstructor<T> : container.constructor) as ConfigContainerConstructor<T>);
 
   props.forEach(prop => {
     const value = get(fromFiles, prop.key);
