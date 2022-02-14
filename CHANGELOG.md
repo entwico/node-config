@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/entwico/node-config/compare/v1.1.0...v1.2.0) (2022-02-14)
+
+
+### Features
+
+* support loading the config into the instances of decorated config classes ([653fb38](https://github.com/entwico/node-config/commit/653fb38276151156fd9e693314b8bd907c30a948))
+
 # [1.1.0](https://github.com/entwico/node-config/compare/v1.0.3...v1.1.0) (2022-02-07)
 
 
