@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/entwico/node-config/compare/v1.2.0...v1.3.0) (2022-04-07)
+
+
+### Features
+
+* add support for lists ([43db87c](https://github.com/entwico/node-config/commit/43db87c8c54de88e49c2e8e77974c61bd7bb5f61))
+
 # [1.2.0](https://github.com/entwico/node-config/compare/v1.1.0...v1.2.0) (2022-02-14)
 
 
