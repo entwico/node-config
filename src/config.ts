@@ -1,31 +1,9 @@
-import { readFileSync } from 'fs';
-import { get, merge, set } from 'lodash';
-import { extname, resolve } from 'path';
-import { parse as parseYaml } from 'yaml';
-import { flattenProps } from './decorators';
-
-function readConfigFile(path: string) {
-  path = resolve(path);
-
-  switch (extname(path)) {
-    case '.yml': case '.yaml': return parseYaml(readFileSync(path, 'utf8'));
-    case '.js': case '.json': return require(resolve(path));
-    // TODO dotenv
-    default: throw new Error('Config file format unknown for ' + path);
-  }
-}
-
-function coerceBoolean(string: string) {
-  if (string === 'true' || string === '1') {
-    return true;
-  }
-
-  if (string === 'false' || string === '0') {
-    return false;
-  }
-
-  return null;
-}
+import { set } from 'lodash';
+import { getRegisteredDescriptors } from './decorators';
+import { ConfigFileProvider } from './config-providers/config-file-provider';
+import { ConfigProvider } from './config-providers/config-provider';
+import { coerceBoolean, coerceNumber, coerceString } from './utils';
+import { ConfigEnvProvider } from './config-providers/config-env-provider';
 
 export interface LoadConfigSettings {
   env: {
@@ -41,38 +19,39 @@ export interface ConfigContainerConstructor<T> {
 export function loadConfig<T>(container: ConfigContainerConstructor<T> | T, { env, files }: LoadConfigSettings) {
   const isFactory = typeof container === 'function';
   const result = !isFactory ? container : new (container as ConfigContainerConstructor<T>)();
-  const fromFiles = {};
+  const descriptors = getRegisteredDescriptors((isFactory ? container : container.constructor) as ConfigContainerConstructor<T>);
 
-  files.forEach(p => merge(fromFiles, readConfigFile(p)));
+  const providers: ConfigProvider[] = [
+    new ConfigFileProvider(files),
+    new ConfigEnvProvider(env.prefix, process.env),
+  ];
 
-  const props = flattenProps((isFactory ? container as ConfigContainerConstructor<T> : container.constructor) as ConfigContainerConstructor<T>);
-
-  props.forEach(prop => {
-    const value = get(fromFiles, prop.key);
-
+  providers.forEach(provider => provider.provide().forEach(({ key, value }) => {
     if (value !== undefined) {
-      switch (prop.type) {
-        case 'string': set(result as any, prop.key, String(value)); break;
-        case 'number': set(result as any, prop.key, Number(value)); break;
-        case 'boolean': set(result as any, prop.key, Boolean(value)); break;
-        case 'unknown': set(result as any, prop.key, value); break;
+      const prop = descriptors.find(p => new RegExp(p.regex, provider.isCaseSensitive() ? '' : 'i').test(key));
+
+      if (prop) {
+        let targetKey = key;
+
+        if (!provider.isCaseSensitive()) {
+          // convert the case to the correct one
+          let replaceGroup = 0;
+          const replace = prop.key.replace(/\[\]/g, () => `[$${++replaceGroup}]`);
+
+          targetKey = key.replace(new RegExp(prop.regex, 'i'), replace);
+        }
+
+        switch (prop.type) {
+          case 'string': set(result as Object, targetKey, coerceString(value)); break;
+          case 'number': set(result as Object, targetKey, coerceNumber(value)); break;
+          case 'boolean': set(result as Object, targetKey, coerceBoolean(value)); break;
+
+          // setting value as is
+          case 'unknown': set(result as Object, targetKey, value); break;
+        }
       }
     }
-  });
-
-  props.forEach(prop => {
-    const envName = (env.prefix + prop.key.replace(/\./g, '_')).toUpperCase();
-    const stringVal = process.env[envName];
-
-    if (stringVal !== undefined) {
-      switch (prop.type) {
-        case 'string': set(result as any, prop.key, String(stringVal)); break;
-        case 'number': set(result as any, prop.key, Number(stringVal)); break;
-        case 'boolean': set(result as any, prop.key, coerceBoolean(stringVal)); break;
-        case 'unknown': break; // cannot be converted from string w/o knowledge about the type
-      }
-    }
-  })
+  }));
 
   return result;
 }
