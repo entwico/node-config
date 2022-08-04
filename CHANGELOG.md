@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/entwico/node-config/compare/v1.3.0...v1.3.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* export List decorator ([2fb7c42](https://github.com/entwico/node-config/commit/2fb7c42b7408c434189727530c4dc2c7b203ba6d))
+
 # [1.3.0](https://github.com/entwico/node-config/compare/v1.2.0...v1.3.0) (2022-04-07)
 
 
